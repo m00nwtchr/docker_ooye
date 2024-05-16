@@ -58,7 +58,5 @@ if [ -n "${EMOJI_GUILD}" ]; then
   emoji_arg="--emoji-guild=${EMOJI_GUILD}"
 fi
 
-node scripts/seed.js $emoji_arg
-
 echo "Starting server"
 exec node start.js
