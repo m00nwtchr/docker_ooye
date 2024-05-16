@@ -1,9 +1,17 @@
-FROM node:18-alpine
+ARG NODE_VERSION="20"
+ARG OOYE_TAG="v2.1"
+
+FROM alpine AS source
 
 RUN apk add --no-cache git
-RUN git clone --depth 1 --branch v2.0 https://gitdab.com/cadence/out-of-your-element.git /app
+RUN git clone --depth 1 --branch ${OOYE_TAG} https://gitdab.com/cadence/out-of-your-element.git /src
+
+FROM node:${NODE_VERSION}-alpine
 WORKDIR /app
-RUN npm i
+
+COPY --from=source /src/package*.json ./
+RUN npm ci --omit=dev && npm cache clean --force
+COPY --from=source /src/ .
 
 RUN adduser ooye -Du 1001
 RUN chown -R ooye /app
@@ -31,4 +39,3 @@ VOLUME /app/db
 
 COPY --chmod=744 --chown=ooye:ooye ./docker-entrypoint.sh /docker-entrypoint.sh
 ENTRYPOINT ["/docker-entrypoint.sh"]
-
