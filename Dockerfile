@@ -5,12 +5,13 @@ FROM alpine AS source
 
 RUN apk add --no-cache git
 RUN git clone --depth=1 --branch=v2.1 https://gitdab.com/cadence/out-of-your-element.git /src
+WORKDIR /src
+
+RUN npm ci --omit=dev && npm cache clean --force
 
 FROM node:${NODE_VERSION}-alpine
 WORKDIR /app
 
-COPY --from=source /src/package*.json ./
-RUN npm ci --omit=dev && npm cache clean --force
 COPY --from=source /src/ .
 
 RUN adduser ooye -Du 1001
