@@ -1,7 +1,7 @@
 ARG NODE_VERSION="20"
 ARG OOYE_TAG="v2.1"
 
-FROM alpine AS source
+FROM node:${NODE_VERSION}-alpine AS source
 
 RUN apk add --no-cache git
 RUN git clone --depth=1 --branch=v2.1 https://gitdab.com/cadence/out-of-your-element.git /src
